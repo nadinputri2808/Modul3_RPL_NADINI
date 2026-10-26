@@ -1,9 +1,8 @@
 from config.database import Database
 
-
 class BukuModel:
     def __init__(self):
-        self.db = Database()
+        self.db = Database()        
         self.conn = self.db.get_connection()
         self.table_name = "buku"
 
