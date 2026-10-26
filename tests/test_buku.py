@@ -19,3 +19,20 @@ def test_create_buku_berhasil():
     mock_cursor.execute.assert_called_once()
     # Memverifikasi apakah perintah commit (simpan) dipanggil
     model.conn.commit.assert_called_once()
+    
+def test_get_all_buku_berhasil():
+    model = BukuModel()
+    model.conn = MagicMock()
+    mock_cursor = MagicMock()
+    model.conn.cursor.return_value = mock_cursor
+
+    mock_cursor.fetchall.return_value = [
+        (1, "Pemrograman Python", "Tim QA", 2025),
+        (2, "Struktur Data", "Admin", 2026)
+    ]
+
+    hasil = model.get_all_buku()
+
+    assert isinstance(hasil, list)
+    assert len(hasil) == 2
+    mock_cursor.execute.assert_called_once()
