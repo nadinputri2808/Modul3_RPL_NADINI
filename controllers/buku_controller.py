@@ -3,7 +3,8 @@ from models.buku_model import BukuModel
 from views.buku_view import BukuView
 
 class BukuController:
-    def __init__(self, user_role="anggota"):
+    def __init__(self, master_login=None, user_role="anggota"):
+        self.master_login = master_login
         self.user_role = user_role
         self.model = BukuModel()
         self.view = BukuView()
@@ -13,6 +14,7 @@ class BukuController:
         self.view.btn_simpan.configure(command=self.simpan_data)
         self.view.btn_delete.configure(command=self.hapus_data)
         self.view.btn_update.configure(command=self.update_data)
+        self.view.btn_logout.configure(command=self.logout)
 
         if self.user_role != "admin":
             self.view.btn_simpan.configure(state="disabled", text="Akses Terkunci (Khusus Admin)")
@@ -109,6 +111,21 @@ class BukuController:
             self.muat_data_tabel()
         else:
             messagebox.showerror("Error", "Terjadi kesalahan saat memperbarui data.")
+
+    def logout(self):
+        """Menutup halaman buku dan kembali ke Login."""
+        konfirmasi = messagebox.askyesno(
+             "Konfirmasi Logout",
+             "Apakah Anda yakin ingin keluar dari sistem?",
+            parent=self.view
+        )
+    
+        if konfirmasi:
+            self.view.destroy()
+        
+            from controllers.auth_controller import AuthController
+            app_auth = AuthController()
+            app_auth.run()
 
     def run(self):
         self.view.mainloop()

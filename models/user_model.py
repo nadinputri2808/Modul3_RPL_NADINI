@@ -24,3 +24,20 @@ class UserModel:
             cursor.close()
             return user
         return None
+    
+    def register_user(self, username, password, role="anggota"):
+        if not self.conn or role not in ("admin", "anggota"):
+            return False
+        try:
+            cursor = self.conn.cursor()
+            password_hash = self.hash_password(password)  # otomatis di-hash SHA-256
+            query = f"INSERT INTO {self.table_name} (username, password, role) VALUES (%s, %s, %s)"
+            cursor.execute(query, (username, password_hash, role))
+            self.conn.commit()
+            cursor.close()
+            return True
+        except Exception as e:
+            self.conn.rollback()
+            print(f"Gagal mendaftarkan user: {e}")
+            return False
+        
